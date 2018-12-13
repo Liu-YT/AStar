@@ -7,6 +7,9 @@
 #include <vector>
 using namespace std;
 
+// 拓展结点数
+int totalNode = 0;
+
 // 定义一个结点
 struct Node {
     int priority;               // 估价
@@ -62,10 +65,8 @@ struct cmp {
 set<Node*, cmp> close;
 
 // priority queue中的cmp
-struct cmp1
-{
-    bool operator()(const Node *a, const Node *b) const
-    {
+struct cmp1 {
+    bool operator()(const Node *a, const Node *b) const {
         return a->priority > b->priority;
     }
 };
@@ -149,7 +150,8 @@ void getPath(Node* node) {
         getPath(node->pre);
     }
     else {
-        cout << "show path" << endl;
+        cout << "[INFO] TotalNode: " << totalNode << endl; 
+        cout << endl << "----show path----" << endl;
         movePath.push_back(node);
         for(int i = movePath.size()-1; i >= 0; --i) {
             for(int j = 0; j <= 8; ++j) {
@@ -162,6 +164,7 @@ void getPath(Node* node) {
     }
 }
 
+
 // A* search
 void AStarSearch(vector<int>& cur, vector<int>& target) {
     endOrder = target;
@@ -173,6 +176,12 @@ void AStarSearch(vector<int>& cur, vector<int>& target) {
     open.push(start);
     while(!open.empty()) {
         now = open.top();
+
+        // 输出一些有效信息
+        cout << "[INFO] Open Table: Size: " << open.size() << " Node: ";
+        for(int i = 0; i <= 8; ++i) cout << now->order[i] << " ";
+        cout << endl;
+
         open.pop();
         if(now->order == endOrder)   break;
         close.insert(now);
@@ -184,6 +193,7 @@ void AStarSearch(vector<int>& cur, vector<int>& target) {
                 node->status = now->status + 1;
                 node->priority = getValuationOfOne(node) + node->status;
                 now->child.push_back(node);
+                ++totalNode;
                 open.push(node);
             }
         }
@@ -195,6 +205,7 @@ void AStarSearch(vector<int>& cur, vector<int>& target) {
                 node->status = now->status + 1;
                 node->priority = getValuationOfOne(node) + node->status;
                 now->child.push_back(node);
+                ++totalNode;
                 open.push(node);
             }
         }
@@ -206,6 +217,7 @@ void AStarSearch(vector<int>& cur, vector<int>& target) {
                 node->status = now->status + 1;
                 node->priority = getValuationOfOne(node) + node->status;
                 now->child.push_back(node);
+                ++totalNode;
                 open.push(node);
             }   
         }
@@ -217,6 +229,7 @@ void AStarSearch(vector<int>& cur, vector<int>& target) {
                 node->status = now->status + 1;
                 node->priority = getValuationOfOne(node) + node->status;
                 now->child.push_back(node);
+                ++totalNode;
                 open.push(node);
             }
         }
@@ -227,5 +240,23 @@ void AStarSearch(vector<int>& cur, vector<int>& target) {
     memoryFree(start);
 }
 
+/*
+*   能否达到目标状态的判断方法
+*   一个状态表示成一维的形式，求出除0之外所有数字的逆序数之和，也就是每个数字前面比它大的数字的个数的和，称为这个状态的逆序。该表示等价于某个数后面有比它小的数字的个数
+*   若两个状态的逆序奇偶性 相同，则可相互到达，否则不可相互到达。
+*   证明： https://blog.csdn.net/tiaotiaoyly/article/details/2008233
+*/
+// 计算序列的逆序数
+int getReverse(vector<int>& order) {
+    int num = 0;
+    for(int i = 0; i < 8; ++i) {
+        if(order[i] == 0)   continue;
+        for(int j = i + 1; j <= 8; ++j) {
+            if (order[j] == 0) continue;
+            if(order[i] > order[j]) ++num;
+        }
+    }
+    return num;
+}
 
 #endif
