@@ -1,1 +1,21 @@
-Using the A* algorithm to solve 8-puzzle problem
+# A* 算法
+
+## 介绍
+使用 `A* 算法`解决八数码问题
+
+## 使用
+
+### 编译
+```
+g++ ./src/main.cpp ./src/astar.hpp -o a -std=c++11
+```
+
+### 运行
+```
+./src/a.exe
+```
+
+## 提示
+* 按照要求进行输入，不要输入重复数字
+
+
