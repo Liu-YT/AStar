@@ -87,25 +87,37 @@ int getIndex(vector<int>& v, int value) {
 }
 
 // 估价函数h1 放错位置数目的数字的个数
-int getValuationOfOne(Node* n) {
+int getValuationOfOne(Node* n, int problem = 8) {
     int num = 0;
     for(int i = 0; i <= 8; ++i) {
         if(n->order[i] != endOrder[i])
             ++num;
     }
-    return num-1;
+    return problem == 9 ? num : num-1;
 }
 
 // 估价函数h2 所有数字当前位置以最短路径走到正确位置的步数之和
-int getValuationOfTwo(Node* n) {
+int getValuationOfTwo(Node* n, int problem = 8) {
     int num = 0;
     for(int i = 0; i <= 8; ++i) {
         if (n->order[i] != endOrder[i] && n->order[i] != 0) {
             int index = getIndex(endOrder, n->order[i]);
             num += abs(i % 3 - index % 3) + abs(i / 3 - index / 3);
         }
+        if (n->order[i] == 0 && problem == 9) {
+            int index = getIndex(endOrder, n->order[i]);
+            num += abs(i % 3 - index % 3) + abs(i / 3 - index / 3);
+        }
     }
     return num;
+}
+
+// 估价函数挑选
+int getValuation(Node* n, string choose = "h1", int problem = 8) {
+    if(choose == "h1") 
+        return getValuationOfOne(n, problem);
+    else
+        return getValuationOfTwo(n, problem);
 }
 
 // 移动
@@ -166,7 +178,7 @@ void getPath(Node* node) {
 
 
 // A* search
-void AStarSearch(vector<int>& cur, vector<int>& target) {
+void AStarSearch(vector<int>& cur, vector<int>& target, string choose = "h1") {
     endOrder = target;
 
     // 获取空格的位置
@@ -191,7 +203,7 @@ void AStarSearch(vector<int>& cur, vector<int>& target) {
             Node* node = move(now, (Direction)0);
             if(!close.count(node)) {
                 node->status = now->status + 1;
-                node->priority = getValuationOfOne(node) + node->status;
+                node->priority = getValuation(node, choose) + node->status;
                 now->child.push_back(node);
                 ++totalNode;
                 open.push(node);
@@ -203,7 +215,7 @@ void AStarSearch(vector<int>& cur, vector<int>& target) {
             Node* node = move(now, (Direction)1);
             if (!close.count(node)) {
                 node->status = now->status + 1;
-                node->priority = getValuationOfOne(node) + node->status;
+                node->priority = getValuation(node, choose) + node->status;
                 now->child.push_back(node);
                 ++totalNode;
                 open.push(node);
@@ -215,7 +227,7 @@ void AStarSearch(vector<int>& cur, vector<int>& target) {
             Node* node = move(now, (Direction)2);
             if (!close.count(node)) {
                 node->status = now->status + 1;
-                node->priority = getValuationOfOne(node) + node->status;
+                node->priority = getValuation(node, choose) + node->status;
                 now->child.push_back(node);
                 ++totalNode;
                 open.push(node);
@@ -227,7 +239,7 @@ void AStarSearch(vector<int>& cur, vector<int>& target) {
             Node* node = move(now, (Direction)3);
             if (!close.count(node)) {
                 node->status = now->status + 1;
-                node->priority = getValuationOfOne(node) + node->status;
+                node->priority = getValuation(node, choose) + node->status;
                 now->child.push_back(node);
                 ++totalNode;
                 open.push(node);
