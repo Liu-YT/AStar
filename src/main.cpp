@@ -1,5 +1,4 @@
 #include "astar.hpp"
-#include "nine_puzzle.hpp"
 
 int main(int argc, char const *argv[]) {
     try {
@@ -66,12 +65,8 @@ int main(int argc, char const *argv[]) {
         // 求取两个序列的逆序数，判断奇偶性是否一致
         if ((getReverse(cur) % 2) != (getReverse(target) % 2)) 
             cout << endl << "No solution" << endl;
-        else if(problem == 9) {
-            AStarSearchForNine(cur, target, valuationFunc);
-        } 
-        else {
-            AStarSearch(cur, target, valuationFunc);
-        }
+        else 
+            AStarSearch(cur, target, valuationFunc, problem);
 
     } catch (exception &err) {
         cout << err.what() << endl;

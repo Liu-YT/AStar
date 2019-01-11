@@ -163,7 +163,8 @@ void getPath(Node* node) {
     }
     else {
         cout << "[INFO] TotalNode: " << totalNode << endl; 
-        cout << endl << "----show path----" << endl;
+        cout << "f*(S0): " << movePath.size() << endl;
+        cout << "----show path----" << endl;
         movePath.push_back(node);
         for(int i = movePath.size()-1; i >= 0; --i) {
             for(int j = 0; j <= 8; ++j) {
@@ -171,6 +172,7 @@ void getPath(Node* node) {
                 if(j % 3 == 2)
                     cout << endl;
             }
+            cout << "f(n): " << movePath[i]->priority << endl; 
             cout << endl;
         }
     }
@@ -178,12 +180,13 @@ void getPath(Node* node) {
 
 
 // A* search
-void AStarSearch(vector<int>& cur, vector<int>& target, string choose = "h1") {
+void AStarSearch(vector<int>& cur, vector<int>& target, string choose = "h1", int problem = 8) {
     endOrder = target;
 
     // 获取空格的位置
     int blank = getIndex(cur, 0);
     Node* start = new Node(cur, nullptr, blank);
+    start->priority = getValuation(start, choose, problem);
     Node *now = start;
     open.push(start);
     while(!open.empty()) {
@@ -192,7 +195,7 @@ void AStarSearch(vector<int>& cur, vector<int>& target, string choose = "h1") {
         // 输出一些有效信息
         cout << "[INFO] Open Table: Size: " << open.size() << " Node: ";
         for(int i = 0; i <= 8; ++i) cout << now->order[i] << " ";
-        cout << endl;
+        cout << "f(n): " << now->priority << endl;
 
         open.pop();
         if(now->order == endOrder)   break;
@@ -203,7 +206,7 @@ void AStarSearch(vector<int>& cur, vector<int>& target, string choose = "h1") {
             Node* node = move(now, (Direction)0);
             if(!close.count(node)) {
                 node->status = now->status + 1;
-                node->priority = getValuation(node, choose) + node->status;
+                node->priority = getValuation(node, choose, problem) + node->status;
                 now->child.push_back(node);
                 ++totalNode;
                 open.push(node);
@@ -215,7 +218,7 @@ void AStarSearch(vector<int>& cur, vector<int>& target, string choose = "h1") {
             Node* node = move(now, (Direction)1);
             if (!close.count(node)) {
                 node->status = now->status + 1;
-                node->priority = getValuation(node, choose) + node->status;
+                node->priority = getValuation(node, choose, problem) + node->status;
                 now->child.push_back(node);
                 ++totalNode;
                 open.push(node);
@@ -227,7 +230,7 @@ void AStarSearch(vector<int>& cur, vector<int>& target, string choose = "h1") {
             Node* node = move(now, (Direction)2);
             if (!close.count(node)) {
                 node->status = now->status + 1;
-                node->priority = getValuation(node, choose) + node->status;
+                node->priority = getValuation(node, choose, problem) + node->status;
                 now->child.push_back(node);
                 ++totalNode;
                 open.push(node);
@@ -239,7 +242,7 @@ void AStarSearch(vector<int>& cur, vector<int>& target, string choose = "h1") {
             Node* node = move(now, (Direction)3);
             if (!close.count(node)) {
                 node->status = now->status + 1;
-                node->priority = getValuation(node, choose) + node->status;
+                node->priority = getValuation(node, choose, problem) + node->status;
                 now->child.push_back(node);
                 ++totalNode;
                 open.push(node);
