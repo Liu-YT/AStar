@@ -51,6 +51,7 @@
             if(n->order[i] != endOrder[i])
                 ++num;
         }
+        if(num == 0)    return 0;
         return problem == 9 ? num : num-1;
     }
 
@@ -319,7 +320,7 @@
     1 2 3 
     4 5 6 
     7 8 0 
-    f(n): 21
+    f(n): 22
     ```
 * 经过多组测试，验证`h1(n)`的单调性，凡`A*`算法挑选出来求后继的点`ni`扩展的一个子结点`nj`，满足: `h(ni）≤1+h(nj）`
 * `h2`结果输出

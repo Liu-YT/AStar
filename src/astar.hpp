@@ -93,6 +93,7 @@ int getValuationOfOne(Node* n, int problem = 8) {
         if(n->order[i] != endOrder[i])
             ++num;
     }
+    if(num == 0)    return 0;
     return problem == 9 ? num : num-1;
 }
 
